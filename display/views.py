@@ -12,7 +12,13 @@ def home(request):
     display = 'INSERT COINS'
 
     # retrieve what's in the cache
-    cache = Coins.objects.get(pk=CACHE_ID)
+    try:
+        cache = Coins.objects.get(pk=CACHE_ID)
+    except Coins.DoesNotExist:
+        cache = None
+    if cache is None:
+        cache = Coins(id=CACHE_ID, quarters=0)
+        cache.save()
     quarters = cache.quarters
 
     money: float = 0.25 * quarters
