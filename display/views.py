@@ -3,7 +3,7 @@ from django.template import loader
 # Create your views here.
 from django.http import HttpResponse
 
-from display.models import Coins
+from display.models import Cache
 
 CACHE_ID: int = 7919
 
@@ -13,11 +13,11 @@ def home(request):
 
     # retrieve what's in the cache
     try:
-        cache = Coins.objects.get(pk=CACHE_ID)
-    except Coins.DoesNotExist:
+        cache = Cache.objects.get(pk=CACHE_ID)
+    except Cache.DoesNotExist:
         cache = None
     if cache is None:
-        cache = Coins(id=CACHE_ID, quarters=0)
+        cache = Cache(id=CACHE_ID, quarters=0)
         cache.save()
     quarters = cache.quarters
 
@@ -36,7 +36,7 @@ def home(request):
 
 def insert_coin(request):
     # Add a quarter to the cache
-    cache = Coins.objects.get(pk=CACHE_ID)
+    cache = Cache.objects.get(pk=CACHE_ID)
     quarters = cache.quarters
     if quarters is None:
         quarters = 1
@@ -49,7 +49,7 @@ def insert_coin(request):
 
 
 def coin_return(request):
-    cache = Coins.objects.get(pk=CACHE_ID)
+    cache = Cache.objects.get(pk=CACHE_ID)
     quarters = cache.quarters
     cache.quarters = 0
     cache.save()
@@ -63,7 +63,7 @@ def coin_return(request):
 def dispense_product(request):
     money: float = 1.0
     display = 'THANK YOU'
-    cache = Coins.objects.get(pk=CACHE_ID)
+    cache = Cache.objects.get(pk=CACHE_ID)
     quarters = cache.quarters
     if quarters >= 4:
         quarters = quarters - 4
