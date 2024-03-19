@@ -11,22 +11,32 @@
 <body>
     <div class="container text-center">
         <H1>Vending Machine</H1>
+        <h3>• • •</h3>
     </div>
     <div class="container text-center">
-        <h2>{{ display }}</h2>
+        <form class="row g-3" action="./insert" method="post">
+        {% csrf_token %}
+            <fieldset class="container text-center">
+                <legend>Coin slot:</legend>
+                <input type="text" name="inserted_quarters" id="inserted_quarters" value="0">
+            </fieldset>
+            <div class="col-12">
+                <button type="submit" class="btn btn-outline-primary">Insert Quarter</button>
+            </div>
+        </form>
+    </div>
+    <div class="container text-center">
+        <h1>Current Balance</h1>
         <h2>{{ quarters }} quarters</h2>
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-primary" onclick="location.href='./insert'">
-                Insert Quarter
-            </button>
             <button type="button" class="btn btn-danger" onclick="location.href='./return'">
                 Return
             </button>
         </div>
     </div>
     <div class="container text-center">
-        <h1>Current Balance</h1>
-        <h2>{{ show_money }}</h2>
+        <h1>{{ show_money }}</h1>
+        <h2>{{ display }}</h2>
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-outline-primary" onclick="location.href='./dispense'">Select Product
             </button>

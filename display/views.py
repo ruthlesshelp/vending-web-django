@@ -35,13 +35,24 @@ def home(request):
 
 
 def insert_coin(request):
+    inserted_quarters: int = 0
+
+    # Retrieve value from the POST
+    if request.method == "POST":
+        inserted_quarters_str = request.POST.get('inserted_quarters')
+        if inserted_quarters_str is not None:
+            inserted_quarters = int(inserted_quarters_str)
+
+    print("Inserted quarters: {}".format(inserted_quarters))
+
     # Add a quarter to the cache
     cache = Cache.objects.get(pk=CACHE_ID)
     quarters = cache.quarters
     if quarters is None:
-        quarters = 1
-    else:
-        quarters = quarters + 1
+        quarters = 0
+
+    if inserted_quarters > 0:
+        quarters = quarters + inserted_quarters
     cache.quarters = quarters
     cache.save()
 
