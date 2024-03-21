@@ -1,7 +1,7 @@
 from django.template import loader
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from display.models import Cache
 
@@ -35,15 +35,8 @@ def home(request):
 
 
 def insert_coin(request):
-    inserted_quarters: int = 0
-
-    # Retrieve value from the POST
-    if request.method == "POST":
-        inserted_quarters_str = request.POST.get('inserted_quarters')
-        if inserted_quarters_str is not None:
-            inserted_quarters = int(inserted_quarters_str)
-
-    print("Inserted quarters: {}".format(inserted_quarters))
+    if request.method != "POST":
+        return HttpResponseRedirect('.')
 
     # Add a quarter to the cache
     cache = Cache.objects.get(pk=CACHE_ID)
@@ -51,12 +44,37 @@ def insert_coin(request):
     if quarters is None:
         quarters = 0
 
-    if inserted_quarters > 0:
-        quarters = quarters + inserted_quarters
-    cache.quarters = quarters
-    cache.save()
+    display = 'INSERT COINS'
+    money: float = 0.25 * quarters
+    if money >= 1.0:
+        display = 'SELECT PRODUCT'
 
-    return home(request)
+    template = loader.get_template('index.html')
+    context = {
+        'quarters': quarters,
+        'show_money': f'${money:.2f}',
+        'display': display,
+    }
+
+    # Retrieve value from the POST
+    try:
+        inserted_quarters = int(request.POST.get('inserted_quarters'))
+
+        if inserted_quarters > 0:
+            quarters = quarters + inserted_quarters
+        else:
+            raise ValueError()
+
+        cache.quarters = quarters
+        cache.save()
+
+        print("Inserted quarters: {}".format(inserted_quarters))
+    except Exception as exc_info:
+        context['error_message'] = 'Please enter the number of quarters, greater than zero.'
+
+        return HttpResponse(template.render(context, request))
+    else:
+        return HttpResponseRedirect('.')
 
 
 def coin_return(request):

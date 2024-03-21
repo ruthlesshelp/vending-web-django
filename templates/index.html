@@ -18,10 +18,13 @@
         {% csrf_token %}
             <fieldset class="container text-center">
                 <legend>Coin slot:</legend>
-                <input type="text" name="inserted_quarters" id="inserted_quarters" value="0">
+                {% if error_message %}
+                    <div class="alert alert-danger" id="inserted_quarters_alert">{{ error_message }}</div>
+                {% endif %}
+                <input type="text" name="inserted_quarters" id="number_of_quarters">
             </fieldset>
             <div class="col-12">
-                <button type="submit" class="btn btn-outline-primary">Insert Quarter</button>
+                <button type="submit" class="btn btn-outline-primary" id="insert_quarters">Insert Quarter</button>
             </div>
         </form>
     </div>
@@ -29,7 +32,7 @@
         <h1>Current Balance</h1>
         <h2>{{ quarters }} quarters</h2>
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-danger" onclick="location.href='./return'">
+            <button type="button" class="btn btn-danger" onclick="location.href='./return'" id="coin_return">
                 Return
             </button>
         </div>
@@ -38,7 +41,8 @@
         <h1>{{ show_money }}</h1>
         <h2>{{ display }}</h2>
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-primary" onclick="location.href='./dispense'">Select Product
+            <button type="button" class="btn btn-outline-primary" onclick="location.href='./dispense'" id="select_product">
+                Select Product
             </button>
         </div>
     </div>
